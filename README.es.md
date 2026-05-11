@@ -1,78 +1,81 @@
-![License](https://img.shields.io/badge/license-MIT-blue.svg)
-![Platform](https://img.shields.io/badge/platform-Zabbix%207.0-red.svg)
-![PHP](https://img.shields.io/badge/PHP-8.1-777BB4?logo=php)
-![Status](https://img.shields.io/badge/status-stable-brightgreen)
-![Issues](https://img.shields.io/github/issues/rotoapanta/host-uptime-sla-module)
-![Last Commit](https://img.shields.io/github/last-commit/rotoapanta/host-uptime-sla-module)
-![Repo Size](https://img.shields.io/github/repo-size/rotoapanta/host-uptime-sla-module)
-
----
-
-<p align="right"><a href="README.md">[EN]</a> | <strong>[ES]</strong></p>
+<p align="right"><a href="README.md">English</a></p>
 
 # <p align="center">Host Uptime & SLA – Módulo para Zabbix 7</p>
 
-## Descripción
+<p align="center">
+    <a href="https://www.zabbix.com/"><img src="https://img.shields.io/badge/Zabbix-7.0.x-red" alt="Zabbix"></a>
+    <a href="https://www.php.net/"><img src="https://img.shields.io/badge/PHP-8.1-777BB4?logo=php" alt="PHP"></a>
+    <a href="https://github.com/rotoapanta/host-uptime-sla-module/issues"><img src="https://img.shields.io/github/issues/rotoapanta/host-uptime-sla-module" alt="GitHub issues"></a>
+    <a href="https://github.com/rotoapanta/host-uptime-sla-module"><img src="https://img.shields.io/github/repo-size/rotoapanta/host-uptime-sla-module" alt="GitHub repo size"></a>
+    <a href="https://github.com/rotoapanta/host-uptime-sla-module/commits"><img src="https://img.shields.io/github/last-commit/rotoapanta/host-uptime-sla-module" alt="GitHub last commit"></a>
+    <a href="https://www.linux.org/"><img src="https://img.shields.io/badge/Platform-Linux-orange" alt="Linux"></a>
+    <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License: MIT"></a>
+    <a href="https://www.linkedin.com/in/roberto-carlos-toapanta-g/"><img src="https://img.shields.io/badge/Author-Roberto%20Toapanta-brightgreen" alt="Author"></a>
+    <a href="#-changelog"><img src="https://img.shields.io/badge/Version-1.0.0-brightgreen" alt="Version"></a>
+    <a href="https://github.com/rotoapanta/host-uptime-sla-module/fork"><img src="https://img.shields.io/github/forks/rotoapanta/host-uptime-sla-module?style=social" alt="GitHub forks"></a>
+</p>
 
-**Host Uptime & SLA** es un módulo personalizado para Zabbix 7 que genera un reporte detallado de disponibilidad y cumplimiento de SLA para todos los hosts monitoreados.
-
-El módulo consulta el ítem `icmpping` desde `history_uint` o `trends_uint` (seleccionado automáticamente según el período), calcula el porcentaje de uptime y el tiempo caído por host, y compara los resultados contra un objetivo de SLA configurable.
-
----
-
-## Características
-
-* Selector de tiempo nativo de Zabbix 7 (calendario, rangos rápidos, zoom)
-* Filtro por grupos de hosts, hosts y objetivo de SLA
-* Barra de disponibilidad con escala de colores (rojo / amarillo / verde)
-* Badge de estado Online / Offline / Mantenimiento por host
-* Tiempo caído formateado en años, meses, días, horas y minutos
-* Estadísticas globales: total de hosts, online, offline, disponibilidad media, cumplen/incumplen SLA
-* Reporte PDF exportable con identidad corporativa IG-EPN
-* Integrado en el menú **Reports** de Zabbix
-* Barra de debug configurable mediante el flag `$show_debug`
-* Script de verificación de despliegue (`deploy_check.sh`)
+Módulo personalizado para Zabbix 7 que genera un reporte detallado de disponibilidad y cumplimiento de SLA para todos los hosts monitoreados. Consulta datos del ítem `icmpping` desde `history_uint` o `trends_uint`, calcula el porcentaje de uptime y tiempo caído por host, y compara los resultados contra un objetivo de SLA configurable.
 
 ---
 
-## Requisitos
+## ✨ Características
 
-| Componente | Versión        |
-|------------|----------------|
-| Zabbix     | 7.0.x          |
-| PHP        | 8.1+           |
+- **UI nativa de Zabbix 7:** Usa el selector de tiempo nativo (calendario, rangos rápidos, zoom out) y los componentes de filtro de Zabbix.
+- **Filtrado flexible:** Filtrar por grupos de hosts, hosts específicos y porcentaje objetivo de SLA.
+- **Barra de disponibilidad visual:** Barra con escala de colores (rojo / amarillo / verde) y porcentaje por host.
+- **Badges de estado:** Badge Online / Offline / Mantenimiento por host.
+- **Formato de tiempo caído:** Downtime expresado en años, meses, días, horas y minutos.
+- **Estadísticas globales:** Tarjetas de total de hosts, online, offline, disponibilidad media, cumplen/incumplen SLA.
+- **Exportación PDF:** Reporte PDF con identidad corporativa IG-EPN, auto-impresión al cargar.
+- **Menú integrado:** Aparece en **Reports → Host Uptime & SLA** dentro de Zabbix.
+- **Modo debug:** Configurable mediante el flag `$show_debug` en la vista.
+- **Verificador de despliegue:** Script `deploy_check.sh` que valida integridad de archivos vía MD5 + tamaño.
+
+---
+
+## 🛠️ Requisitos del sistema
+
+| Componente | Versión |
+|------------|---------|
+| Zabbix     | 7.0.x   |
+| PHP        | 8.1+    |
 | Hosts      | Ítem `icmpping` habilitado y monitoreado |
 
 ---
 
-## Estructura del módulo
+## 🗂️ Estructura del proyecto
 
 ```
 host-uptime-sla-module/
 ├── actions/
-│   ├── HostUptimeSlaModule.php       ← Controlador principal
-│   └── HostUptimeSlaModulePdf.php    ← Controlador PDF
+│   ├── HostUptimeSlaModule.php       # Controlador principal
+│   └── HostUptimeSlaModulePdf.php    # Controlador PDF
 ├── assets/
-│   └── igepn_logo.png                ← Logo corporativo
+│   ├── igepn_logo.png                # Logo corporativo (encabezado PDF)
+│   └── screenshots/
+│       ├── screenshot_main.png
+│       └── screenshot_pdf.png
 ├── views/
-│   ├── host.uptime.sla.module.php    ← Vista principal
-│   └── host.uptime.sla.pdf.php       ← Vista PDF (layout.print)
-├── deploy_check.sh                   ← Verificador de despliegue (MD5 + tamaño)
-├── manifest.json                     ← Manifiesto del módulo
-├── Module.php                        ← Registro en el menú
-└── README.md
+│   ├── host.uptime.sla.module.php    # Vista principal
+│   └── host.uptime.sla.pdf.php       # Vista PDF (layout.print)
+├── deploy_check.sh                   # Verificador de despliegue (MD5 + tamaño)
+├── manifest.json                     # Manifiesto del módulo
+├── Module.php                        # Registro en el menú
+├── README.md
+└── README.es.md
 ```
 
 ---
 
-## Instalación
+## 🚀 Instalación
 
-### 1. Copiar el módulo a Zabbix
+### 1. Copiar el módulo al servidor
 
 ```bash
 # Crear directorio en el servidor
 sudo mkdir -p /var/www/html/zabbix/modules/host-uptime-sla-module
-sudo chown -R www-data:www-data /var/www/html/zabbix/modules/host-uptime-sla-module
+sudo chown -R rtoapanta:www-data /var/www/html/zabbix/modules/host-uptime-sla-module
 sudo chmod -R 775 /var/www/html/zabbix/modules/host-uptime-sla-module
 
 # Desplegar desde la máquina local
@@ -89,7 +92,7 @@ El módulo aparecerá en **Reports → Host Uptime & SLA**.
 
 ---
 
-## Verificación del despliegue
+## ✅ Verificación del despliegue
 
 ```bash
 chmod +x deploy_check.sh
@@ -115,16 +118,16 @@ manifest.json                         [OK]  md5=pqr678…  size=434B
 
 ---
 
-## Uso
+## 📖 Uso
 
 ### Filtros disponibles
 
-| Filtro          | Descripción                                    |
-|-----------------|------------------------------------------------|
-| Host groups     | Filtrar hosts por uno o más grupos             |
-| Hosts           | Filtrar por hosts específicos                  |
-| SLA mínimo      | Objetivo SLA: 99.9 / 99.5 / 99.0 / 98.0 / 95.0 % |
-| From / To       | Rango de tiempo (selector nativo de Zabbix)    |
+| Filtro          | Descripción                                         |
+|-----------------|-----------------------------------------------------|
+| Host groups     | Filtrar hosts por uno o más grupos                  |
+| Hosts           | Filtrar por hosts específicos                       |
+| SLA mínimo      | Objetivo: 99.9 / 99.5 / 99.0 / 98.0 / 95.0 %      |
+| From / To       | Rango de tiempo con el selector nativo de Zabbix    |
 
 ### Lógica de fuente de datos
 
@@ -135,29 +138,29 @@ manifest.json                         [OK]  md5=pqr678…  size=434B
 
 ### Modo debug
 
-En `views/host.uptime.sla.module.php`, configurar:
+En `views/host.uptime.sla.module.php`:
 
 ```php
-$show_debug = true;   // muestra la barra de debug
+$show_debug = true;   // muestra la barra de debug (parámetros + timestamps)
 $show_debug = false;  // modo producción (por defecto)
 ```
 
 ---
 
-## Exportación PDF
+## 📄 Exportación PDF
 
 Al hacer clic en **Download PDF** se abre el reporte en una nueva pestaña con:
 
-* Logo IG-EPN y colores corporativos (`#8B4513`, `#C8860A`)
-* Período, objetivo SLA, fuente de datos y fecha de generación
-* Tarjetas de estadísticas del resumen
-* Tabla completa con barras de disponibilidad y resultado SLA
-* Diálogo de impresión automático al cargar
-* Nombre de archivo sugerido: `Host_Uptime_SLA_YYYY-MM-DD_HH-mm.pdf`
+- Logo IG-EPN y colores corporativos (`#8B4513`, `#C8860A`)
+- Período, objetivo SLA, fuente de datos y fecha de generación
+- Tarjetas de estadísticas del resumen
+- Tabla completa con barras de disponibilidad y resultado SLA
+- Diálogo de impresión automático al cargar la página
+- Nombre de archivo sugerido: `Host_Uptime_SLA_YYYY-MM-DD_HH-mm.pdf`
 
 ---
 
-## Capturas de pantalla
+## 📸 Capturas de pantalla
 
 ### Vista principal
 ![Vista principal](assets/screenshots/screenshot_main.png)
@@ -167,31 +170,43 @@ Al hacer clic en **Download PDF** se abre el reporte en una nueva pestaña con:
 
 ---
 
-## Contribuciones
+## 💬 Feedback
 
-¡Las contribuciones son bienvenidas!
+Para comentarios o sugerencias: robertocarlos.toapanta@gmail.com
 
-1. Realiza un fork del repositorio
-2. Crea una rama (`feature/nueva-funcionalidad`)
-3. Realiza los cambios
-4. Envía un Pull Request
+## 🛟 Soporte
 
----
+Para soporte, escribir a robertocarlos.toapanta@gmail.com
 
-## Licencia
+## 📄 Licencia
 
-Este proyecto está bajo la licencia MIT.
+[MIT](https://opensource.org/licenses/MIT)
 
----
+## 👥 Autores
 
-## Autor
-
-**Roberto Toapanta**
-Ingeniero Eléctrico · IG-EPN
-Monitoreo de redes | Zabbix | PHP | Bash
+- [@rotoapanta](https://github.com/rotoapanta)
 
 ---
 
-## Apoyo
+## 📜 Changelog
 
-Si este proyecto te resulta útil, considera darle una estrella ⭐
+Este proyecto sigue [Keep a Changelog](https://keepachangelog.com/) y [Semantic Versioning](https://semver.org/).
+
+### [Unreleased]
+-
+
+### 1.0.0 – 2026-05-11
+- Versión estable inicial.
+- Selector de tiempo nativo de Zabbix 7 (calendario + rangos rápidos).
+- Filtro por grupos de hosts, hosts y objetivo de SLA.
+- Exportación PDF con identidad corporativa IG-EPN.
+- Script de verificación de despliegue (`deploy_check.sh`).
+- Flag de modo debug (`$show_debug`).
+
+---
+
+## 🔗 Links
+
+[![linkedin](https://img.shields.io/badge/linkedin-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/roberto-carlos-toapanta-g/)
+
+[![twitter](https://img.shields.io/badge/twitter-1DA1F2?style=for-the-badge&logo=twitter&logoColor=white)](https://twitter.com/rotoapanta)
