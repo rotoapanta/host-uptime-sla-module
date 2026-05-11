@@ -1,0 +1,17 @@
+{
+  "manifest_version": "2.0",
+  "id": "host_uptime_sla_module",
+  "name": "Host Uptime & SLA",
+  "version": "1.0",
+  "namespace": "HostUptimeSla",
+  "description": "Availability, uptime, and SLA compliance for all monitored hosts",
+  "author": "rtoapanta",
+  "url": "",
+  "actions": {
+    "host.uptime.sla": {
+      "class": "HostUptimeSlaModule",
+      "view": "host.uptime.sla.module",
+      "layout": "layout.htmlpage"
+    }
+  }
+}
