@@ -83,7 +83,7 @@ rsync -avz --progress \
 
 ### 2. Habilitar en Zabbix
 
-Ir a **Administration → Modules** y habilitar `host-uptime-sla-module`.
+Ir a **Administration → Modules**, hacer clic en **Scan directory** y luego habilitar `host-uptime-sla-module`.
 
 El módulo aparecerá en **Reports → Host Uptime & SLA**.
 
@@ -159,7 +159,11 @@ Al hacer clic en **Download PDF** se abre el reporte en una nueva pestaña con:
 
 ## Capturas de pantalla
 
-> *(Agregar capturas aquí)*
+### Vista principal
+![Vista principal](assets/screenshots/screenshot_main.png)
+
+### Exportación PDF
+![Exportación PDF](assets/screenshots/screenshot_pdf.png)
 
 ---
 
