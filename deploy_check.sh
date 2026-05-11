@@ -6,12 +6,14 @@
 
 REMOTE_USER="rtoapanta"
 REMOTE_HOST="192.168.1.143"
-REMOTE_BASE="/var/www/html/zabbix/modules/host_uptime_sla_module"
+REMOTE_BASE="/var/www/html/zabbix/modules/host-uptime-sla-module"
 LOCAL_BASE="$(cd "$(dirname "$0")" && pwd)"
 
 FILES=(
     "actions/HostUptimeSlaModule.php"
+    "actions/HostUptimeSlaModulePdf.php"
     "views/host.uptime.sla.module.php"
+    "views/host.uptime.sla.pdf.php"
     "Module.php"
     "manifest.json"
 )
