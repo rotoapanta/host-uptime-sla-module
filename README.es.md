@@ -11,7 +11,7 @@
     <a href="https://www.linux.org/"><img src="https://img.shields.io/badge/Platform-Linux-orange" alt="Linux"></a>
     <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License: MIT"></a>
     <a href="https://www.linkedin.com/in/roberto-carlos-toapanta-g/"><img src="https://img.shields.io/badge/Author-Roberto%20Toapanta-brightgreen" alt="Author"></a>
-    <a href="#-changelog"><img src="https://img.shields.io/badge/Version-1.0.0-brightgreen" alt="Version"></a>
+    <a href="#-changelog"><img src="https://img.shields.io/badge/Version-1.1.0-brightgreen" alt="Version"></a>
     <a href="https://github.com/rotoapanta/host-uptime-sla-module/fork"><img src="https://img.shields.io/github/forks/rotoapanta/host-uptime-sla-module?style=social" alt="GitHub forks"></a>
 </p>
 
@@ -31,6 +31,9 @@ Módulo personalizado para Zabbix 7 que genera un reporte detallado de disponibi
 - **Menú integrado:** Aparece en **Reports → Host Uptime & SLA** dentro de Zabbix.
 - **Modo debug:** Configurable mediante el flag `$show_debug` en la vista.
 - **Verificador de despliegue:** Script `deploy_check.sh` que valida integridad de archivos vía MD5 + tamaño.
+- **Manejo de errores:** try/catch en todas las queries a BD — los errores se muestran como avisos visuales en lugar de romper la página.
+- **Hosts sin icmpping:** Los hosts sin el ítem `icmpping` se incluyen en la tabla como "Sin datos" con un aviso azul.
+- **Caché APCu:** Resultados en caché durante 5 minutos vía APCu (si está disponible) — la clave se invalida automáticamente al cambiar los filtros.
 
 ---
 
@@ -145,6 +148,18 @@ $show_debug = true;   // muestra la barra de debug (parámetros + timestamps)
 $show_debug = false;  // modo producción (por defecto)
 ```
 
+### Avisos del sistema
+
+Los avisos aparecen automáticamente entre el botón Download PDF y las tarjetas de estadísticas cuando se detecta alguna condición:
+
+| Aviso | Color | Condición |
+|-------|-------|-----------|
+| ⚠ Error de base de datos | 🔴 Rojo | Fallo en query a BD — muestra el mensaje de error |
+| ℹ Hosts sin icmpping | 🔵 Azul | Uno o más hosts no tienen el ítem `icmpping` |
+| ⚡ Caché activo | 🟣 Violeta | Resultados servidos desde caché APCu (TTL 5 min) |
+
+Si no aparece ninguno, todo está funcionando correctamente.
+
 ---
 
 ## 📄 Exportación PDF
@@ -194,6 +209,13 @@ Este proyecto sigue [Keep a Changelog](https://keepachangelog.com/) y [Semantic 
 
 ### [Unreleased]
 -
+
+### 1.1.0 – 2026-05-11
+- Manejo de errores con try/catch en todas las queries a BD.
+- Avisos visuales para errores de BD, hosts sin `icmpping` y estado de caché APCu.
+- Los hosts sin ítem `icmpping` ahora aparecen en la tabla como "Sin datos" en lugar de ser omitidos silenciosamente.
+- Soporte de caché APCu (TTL 5 min) con invalidación automática de clave al cambiar filtros.
+- Versión actualizada a 1.1.0 en los docblocks de todos los controllers.
 
 ### 1.0.0 – 2026-05-11
 - Versión estable inicial.

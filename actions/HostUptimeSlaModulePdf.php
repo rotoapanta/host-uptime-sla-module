@@ -10,7 +10,7 @@
  *
  * @package    Modules\HostUptimeSla\Actions
  * @author     Roberto Toapanta <rtoapanta@igepn.edu.ec>
- * @version    1.0.0
+ * @version    1.1.0
  * @since      Zabbix 7.0.4
  * @copyright  2026 IG-EPN – Instituto Geofísico · Escuela Politécnica Nacional
  */
@@ -111,10 +111,16 @@ class HostUptimeSlaModulePdf extends CController {
 
         if ($hosts) {
             $host_ids_str  = implode(',', array_map('intval', array_keys($hosts)));
-            $res           = DBselect(
-                "SELECT itemid, hostid FROM items
-                 WHERE key_='icmpping' AND status=0 AND hostid IN ($host_ids_str)"
-            );
+            $db_error = null;
+            try {
+                $res = DBselect(
+                    "SELECT itemid, hostid FROM items
+                     WHERE key_='icmpping' AND status=0 AND hostid IN ($host_ids_str)"
+                );
+            } catch (Exception $e) {
+                $db_error = 'Error icmpping: ' . $e->getMessage();
+                $res      = null;
+            }
             $host_item_map = [];
             while ($item = DBfetch($res)) {
                 $host_item_map[$item['hostid']] = $item['itemid'];
@@ -134,12 +140,16 @@ class HostUptimeSlaModulePdf extends CController {
                        FROM history_uint WHERE itemid IN ($iids)
                        AND clock >= $time_from AND clock <= $time_till GROUP BY itemid";
 
-                $rs = DBselect($sql);
-                while ($stat = DBfetch($rs)) {
-                    $istats[$stat['itemid']] = [
-                        'total'  => (float) $stat['total'],
-                        'up_sum' => (float) $stat['up_sum']
-                    ];
+                try {
+                    $rs = DBselect($sql);
+                    while ($stat = DBfetch($rs)) {
+                        $istats[$stat['itemid']] = [
+                            'total'  => (float) $stat['total'],
+                            'up_sum' => (float) $stat['up_sum']
+                        ];
+                    }
+                } catch (Exception $e) {
+                    $db_error = 'Error ' . $source . ': ' . $e->getMessage();
                 }
             } else {
                 $source = 'sin item icmpping';
@@ -230,7 +240,8 @@ class HostUptimeSlaModulePdf extends CController {
             'to'              => $to,
             'time_from'       => $time_from,
             'time_till'       => $time_till,
-            'source'          => $source
+            'source'          => $source,
+            'db_error'        => $db_error ?? null
         ]));
     }
 }

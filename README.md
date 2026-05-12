@@ -11,7 +11,7 @@
     <a href="https://www.linux.org/"><img src="https://img.shields.io/badge/Platform-Linux-orange" alt="Linux"></a>
     <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License: MIT"></a>
     <a href="https://www.linkedin.com/in/roberto-carlos-toapanta-g/"><img src="https://img.shields.io/badge/Author-Roberto%20Toapanta-brightgreen" alt="Author"></a>
-    <a href="#-changelog"><img src="https://img.shields.io/badge/Version-1.0.0-brightgreen" alt="Version"></a>
+    <a href="#-changelog"><img src="https://img.shields.io/badge/Version-1.1.0-brightgreen" alt="Version"></a>
     <a href="https://github.com/rotoapanta/host-uptime-sla-module/fork"><img src="https://img.shields.io/github/forks/rotoapanta/host-uptime-sla-module?style=social" alt="GitHub forks"></a>
 </p>
 
@@ -31,6 +31,9 @@ A custom Zabbix 7 module that provides a detailed availability and SLA complianc
 - **Integrated Menu:** Appears under **Reports → Host Uptime & SLA** in Zabbix.
 - **Debug Mode:** Configurable via `$show_debug` flag in the view.
 - **Deploy Verifier:** `deploy_check.sh` validates file integrity via MD5 + size.
+- **Error Handling:** try/catch on all DB queries — errors shown as visual notices instead of crashing.
+- **Hosts without icmpping:** Hosts missing the `icmpping` item are included in the table as "No data" with a blue notice.
+- **APCu Cache:** Results cached for 5 minutes via APCu (if available) — cache key invalidates automatically when filters change.
 
 ---
 
@@ -145,6 +148,18 @@ $show_debug = true;   // show debug bar (request params + timestamps)
 $show_debug = false;  // production mode (default)
 ```
 
+### System Notices
+
+Visual notices appear automatically between the Download PDF button and the statistics cards when a condition is detected:
+
+| Notice | Color | Condition |
+|--------|-------|-----------|
+| ⚠ Database error | 🔴 Red | DB query failed — shows error message |
+| ℹ Hosts without icmpping | 🔵 Blue | One or more hosts lack the `icmpping` item |
+| ⚡ Cache active | 🟣 Purple | Results served from APCu cache (TTL 5 min) |
+
+If none appear, everything is working correctly.
+
 ---
 
 ## 📄 PDF Export
@@ -194,6 +209,13 @@ This project follows [Keep a Changelog](https://keepachangelog.com/) and [Semant
 
 ### [Unreleased]
 -
+
+### 1.1.0 – 2026-05-11
+- try/catch error handling on all DB queries.
+- Visual notices for DB errors, hosts without `icmpping`, and APCu cache status.
+- Hosts without `icmpping` item now appear in table as "No data" instead of being silently excluded.
+- APCu cache support (TTL 5 min) with automatic key invalidation on filter change.
+- Version bump to 1.1.0 in all controller docblocks.
 
 ### 1.0.0 – 2026-05-11
 - Initial stable release.
