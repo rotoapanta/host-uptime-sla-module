@@ -34,6 +34,13 @@ $db_error    = $data['db_error'] ?? null;
 $cache_hit   = $data['cache_hit'] ?? false;
 $no_icmp     = $data['hosts_no_icmp'] ?? 0;
 
+/**
+ * Debug flag — línea ~37 de este archivo.
+ * true  → muestra la barra DEBUG con parámetros del request y tiempos.
+ * false → oculta la barra (modo producción).
+ */
+$show_debug = false;
+
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
 function ar_format_downtime(int $seconds): string {
@@ -240,26 +247,19 @@ $pdf_button = (new CSimpleButton(_('Download PDF')))
 // ── Page content ──────────────────────────────────────────────────────────────
 
 // ── Avisos del sistema ───────────────────────────────────────────────────────
-
 $notices = [];
-
-// Error de base de datos
 if ($db_error) {
     $notices[] = (new CDiv([
         (new CSpan('⚠ Database error: '))->addClass('ar-notice-label'),
         new CSpan(htmlspecialchars($db_error))
     ]))->addClass('ar-notice ar-notice-error');
 }
-
-// Hosts sin ítem icmpping
 if ($no_icmp > 0) {
     $notices[] = (new CDiv([
         (new CSpan('ℹ '))->addClass('ar-notice-label'),
         new CSpan($no_icmp . ' host(s) do not have the icmpping item enabled — shown as "No data".')
     ]))->addClass('ar-notice ar-notice-info');
 }
-
-// Caché activo
 if ($cache_hit) {
     $notices[] = (new CDiv([
         (new CSpan('⚡ '))->addClass('ar-notice-label'),
@@ -270,7 +270,7 @@ if ($cache_hit) {
 $page_content = new CDiv([
     $pdf_button,
     ...$notices,
-    (new CDiv($debug_text))->addClass('ar-debug'),
+    $show_debug ? (new CDiv($debug_text))->addClass('ar-debug') : null,
 
     (new CDiv([
         (new CDiv([(new CDiv($stats['total']))->addClass('ar-sv'),              (new CDiv(_('Total hosts')))->addClass('ar-sl')]))->addClass('ar-stat'),
@@ -326,14 +326,14 @@ $page_content = new CDiv([
 .ar-bar-red{background:#e53935}.ar-bar-yellow{background:#fbc02d}
 .ar-bar-green{background:#43a047}.ar-bar-empty{background:#e0e0e0}
 .ar-bar-percent{font-weight:700;font-size:13px;min-width:42px}
-.ar-footer{text-align:center;font-size:11px;color:#999;margin-top:20px;padding-top:10px;border-top:1px solid #e0e0e0}
+.ar-footer{text-align:center;font-size:11px;color:#768d99;margin-top:20px;padding-top:10px;border-top:1px solid #e0e0e0}
+#ar-pdf-btn{margin-bottom:10px}
 /* ── Notices ── */
 .ar-notice{padding:8px 12px;margin:0 0 8px;border-radius:3px;font-size:12px;display:flex;align-items:center;gap:6px}
 .ar-notice-label{font-weight:700}
 .ar-notice-error{background:#ffebee;border:1px solid #ef9a9a;color:#b71c1c}
 .ar-notice-info{background:#e3f2fd;border:1px solid #90caf9;color:#0d47a1}
 .ar-notice-cache{background:#f3e5f5;border:1px solid #ce93d8;color:#4a148c}
-#ar-pdf-btn{margin-bottom:10px}
 </style>
 
 <script>

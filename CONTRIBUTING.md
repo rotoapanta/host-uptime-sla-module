@@ -91,21 +91,30 @@ host-uptime-sla-module/
 
 - Follow **PSR-12** style
 - Use **docblocks** on all classes and public methods
-- Wrap all DB queries in **try/catch**
+- Wrap all DB queries in **try/catch** — pass `$db_error` to the view, never let exceptions crash the page
 - Never concatenate raw user input into SQL — use `intval()` and `implode()`
 - Use `CProfile` for filter persistence, not `$_SESSION`
+- Hosts without `icmpping` item must appear in the table with `availability = null` — never silently excluded
+- APCu cache keys must include all filter parameters so the cache invalidates automatically on filter change
 
 ```php
-// ✅ Correct
+// ✅ Correct — try/catch with graceful degradation
 $host_ids_str = implode(',', array_map('intval', array_keys($hosts)));
+$db_error = null;
 
 try {
     $res = DBselect("SELECT ... WHERE hostid IN ($host_ids_str)");
 } catch (Exception $e) {
-    $db_error = $e->getMessage();
+    $db_error = 'Error icmpping: ' . $e->getMessage();
+    $res = null;
 }
 
-// ❌ Incorrect
+// ✅ Correct — APCu cache key includes all filter params
+$cache_key = 'hus_' . md5(serialize([
+    $filter_groupids, $filter_hostids, $time_from, $time_till, $filter_sla
+]));
+
+// ❌ Incorrect — raw input in SQL
 $res = DBselect("SELECT ... WHERE hostid IN (" . $_REQUEST['ids'] . ")");
 ```
 
@@ -125,9 +134,10 @@ $res = DBselect("SELECT ... WHERE hostid IN (" . $_REQUEST['ids'] . ")");
 ## Submitting a Pull Request
 
 1. Make sure `./deploy_check.sh` passes on your test server
-2. Update the **Changelog** section in `README.md` and `README.es.md`
-3. Bump the `@version` in the docblock of modified files
-4. Write a clear PR description:
+2. Verify PHP syntax: `php -l` on all modified files
+3. Update the **Changelog** section in `README.md` and `README.es.md`
+4. Bump the `@version` in the docblock of modified files
+5. Write a clear PR description:
    - What changed and why
    - How to test it
    - Screenshots if UI changed
